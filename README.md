@@ -8,7 +8,7 @@ A fully responsive web-based Ship Maintenance Dashboard built using **React**, *
 
 🌐 **Deployed App:** [https://ship-maintenance-tracker.vercel.app/][https://ship-maintenance-tracker.vercel.app/login]
 
-📁 **GitHub Repository:** [https://github.com/Siddhesh-Hood/Ship-Maintenance-Tracker](https://github.com/sahilramteke7268/Ship-Maintenance-Tracker/edit/main/README.md)
+📁 **GitHub Repository:** (https://github.com/sahilramteke7268/Ship-Maintenance-Tracker/edit/main/README.md)
 
 ---
 
