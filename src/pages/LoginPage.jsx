@@ -1,124 +1,209 @@
-
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { useApp } from '../context/AppContext';
-import { Ship, Lock, Mail } from 'lucide-react';
-import { toast } from '@/hooks/use-toast';
+import { Ship, Lock, Mail, Eye, EyeOff, Waves, Anchor } from 'lucide-react';
 
 const LoginPage = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
-  const { state, dispatch } = useApp();
-  const navigate = useNavigate();
+  const [focusedField, setFocusedField] = useState(null);
 
-  const handleLogin = async (e) => {
+  const handleLogin = (e) => {
     e.preventDefault();
     setLoading(true);
 
-    try {
-      const user = state.users.find(
+    // Demo users for testing
+    const users = [
+      { email: 'admin@entnt.in', password: 'admin123', role: 'Admin' },
+      { email: 'inspector@entnt.in', password: 'inspect123', role: 'Inspector' },
+      { email: 'engineer@entnt.in', password: 'engine123', role: 'Engineer' }
+    ];
+
+    setTimeout(() => {
+      const user = users.find(
         u => u.email === email && u.password === password
       );
 
       if (user) {
-        dispatch({ type: 'SET_CURRENT_USER', payload: user });
-        dispatch({ type: 'SET_AUTHENTICATED', payload: true });
-        toast({
-          title: 'Welcome back!',
-          description: `Logged in as ${user.role}`,
-        });
-        navigate('/');
+        alert(`Welcome back! Logged in as ${user.role}`);
+        // In real app: navigate to dashboard
       } else {
-        toast({
-          title: 'Login failed',
-          description: 'Invalid credentials. Please try again.',
-          variant: 'destructive',
-        });
+        alert('Invalid credentials. Please try again.');
       }
-    } catch (error) {
-      toast({
-        title: 'Error',
-        description: 'An error occurred during login.',
-        variant: 'destructive',
-      });
-    } finally {
       setLoading(false);
-    }
+    }, 1000);
   };
 
-return (
-  <div className="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-blue-100 via-sky-200 to-fuchsia-100">
-    <div className="w-full max-w-md">
-      <div className="text-center mb-8">
-        <div className="mx-auto w-16 h-16 bg-white shadow rounded-2xl flex items-center justify-center mb-4">
-          <Ship className="w-8 h-8 text-sky-600" />
-        </div>
-        <h1 className="text-3xl font-bold text-gray-800 mb-2">Maintenance Tracker</h1>
-        <p className="text-gray-500 font-medium">Maintenance Management</p>
-      </div>
-      <Card className="border-0 shadow-xl bg-white/95">
-        <CardHeader className="space-y-1">
-          <CardTitle className="text-2xl font-bold text-center text-sky-700">Sign In</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <form onSubmit={handleLogin} className="space-y-5">
-            <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
-              <div className="relative group">
-                <Mail className="absolute left-3 top-3 h-5 w-5 text-sky-400" />
-                <Input
-                  id="email"
-                  type="email"
-                  placeholder="Enter your email"
-                  value={email}
-                  onChange={e => setEmail(e.target.value)}
-                  className="pl-12 py-3 rounded-lg border border-sky-200 focus:border-sky-500 bg-white transition-all shadow-sm focus:shadow-md outline-none"
-                  required
-                />
-              </div>
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="password">Password</Label>
-              <div className="relative group">
-                <Lock className="absolute left-3 top-3 h-5 w-5 text-sky-400" />
-                <Input
-                  id="password"
-                  type="password"
-                  placeholder="Enter your password"
-                  value={password}
-                  onChange={e => setPassword(e.target.value)}
-                  className="pl-12 py-3 rounded-lg border border-sky-200 focus:border-sky-500 bg-white transition-all shadow-sm focus:shadow-md outline-none"
-                  required
-                />
-              </div>
-            </div>
-            <Button
-              type="submit"
-              className="w-full bg-sky-600 hover:bg-sky-700 transition-colors text-white font-semibold rounded-lg py-3 mt-2 shadow"
-              disabled={loading}
-            >
-              {loading ? 'Signing in...' : 'Sign In'}
-            </Button>
-          </form>
-          <div className="mt-6 p-4 bg-sky-50 rounded-md">
-            <p className="text-sm font-medium text-sky-800 mb-2">Demo Credentials:</p>
-            <div className="space-y-1 text-xs text-sky-700">
-              <p><strong>Admin:</strong> admin@entnt.in / admin123</p>
-              <p><strong>Inspector:</strong> inspector@entnt.in / inspect123</p>
-              <p><strong>Engineer:</strong> engineer@entnt.in / engine123</p>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-    </div>
-  </div>
-);
+  const demoCredentials = [
+    { role: 'Admin', email: 'admin@entnt.in', password: 'admin123', color: 'bg-red-500', textColor: 'text-red-700' },
+    { role: 'Inspector', email: 'inspector@entnt.in', password: 'inspect123', color: 'bg-blue-500', textColor: 'text-blue-700' },
+    { role: 'Engineer', email: 'engineer@entnt.in', password: 'engine123', color: 'bg-green-500', textColor: 'text-green-700' }
+  ];
 
+  const fillCredentials = (credential) => {
+    setEmail(credential.email);
+    setPassword(credential.password);
+  };
+
+  return (
+    <div className="min-h-screen relative overflow-hidden bg-gradient-to-br from-slate-900 via-blue-900 to-indigo-900">
+      {/* Animated Background Elements */}
+      <div className="absolute inset-0">
+        <div className="absolute top-0 left-0 w-full h-full bg-[url('data:image/svg+xml,%3Csvg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"%3E%3Cg fill="none" fill-rule="evenodd"%3E%3Cg fill="%23ffffff" fill-opacity="0.03"%3E%3Ccircle cx="30" cy="30" r="1"/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')]"></div>
+        
+        {/* Floating Ships */}
+        <div className="absolute top-20 left-10 opacity-10 animate-pulse">
+          <Ship className="w-12 h-12 text-white transform rotate-12" />
+        </div>
+        <div className="absolute bottom-20 right-10 opacity-10 animate-pulse delay-1000">
+          <Anchor className="w-8 h-8 text-white transform -rotate-12" />
+        </div>
+        <div className="absolute top-40 right-20 opacity-10 animate-pulse delay-500">
+          <Waves className="w-10 h-10 text-white" />
+        </div>
+        
+        {/* Gradient Orbs */}
+        <div className="absolute top-1/4 left-1/4 w-72 h-72 bg-blue-500 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-pulse"></div>
+        <div className="absolute top-1/3 right-1/4 w-72 h-72 bg-purple-500 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-pulse delay-1000"></div>
+        <div className="absolute bottom-1/4 left-1/3 w-72 h-72 bg-cyan-500 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-pulse delay-500"></div>
+      </div>
+
+      <div className="relative z-10 min-h-screen flex items-center justify-center p-4">
+        <div className="w-full max-w-md">
+          {/* Header Section */}
+          <div className="text-center mb-8">
+            <div className="relative mx-auto w-20 h-20 mb-6">
+              <div className="absolute inset-0 bg-gradient-to-br from-cyan-400 to-blue-600 rounded-2xl shadow-2xl transform rotate-6"></div>
+              <div className="relative w-full h-full bg-white rounded-2xl flex items-center justify-center shadow-xl">
+                <Ship className="w-10 h-10 text-blue-600" />
+              </div>
+            </div>
+            <h1 className="text-4xl font-bold bg-gradient-to-r from-white via-blue-100 to-cyan-200 bg-clip-text text-transparent mb-3">
+              Maintenance Tracker
+            </h1>
+            <p className="text-blue-200 font-medium text-lg">Ship Management System</p>
+          </div>
+
+          {/* Login Card */}
+          <Card className="border-0 shadow-2xl bg-white/10 backdrop-blur-xl border border-white/20">
+            <CardHeader className="space-y-1 pb-6">
+              <CardTitle className="text-2xl font-bold text-center text-white mb-2">
+                Welcome Back
+              </CardTitle>
+              <p className="text-blue-200 text-center text-sm">Sign in to your account</p>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <div className="space-y-6">
+                {/* Email Field */}
+                <div className="space-y-2">
+                  <Label htmlFor="email" className="text-white font-medium">Email Address</Label>
+                  <div className="relative group">
+                    <Mail className={`absolute left-4 top-4 h-5 w-5 transition-colors ${
+                      focusedField === 'email' ? 'text-cyan-400' : 'text-blue-300'
+                    }`} />
+                    <Input
+                      id="email"
+                      type="email"
+                      placeholder="Enter your email"
+                      value={email}
+                      onChange={e => setEmail(e.target.value)}
+                      onFocus={() => setFocusedField('email')}
+                      onBlur={() => setFocusedField(null)}
+                      className="pl-12 py-4 rounded-xl border-0 bg-white/10 backdrop-blur-sm text-white placeholder:text-blue-200 focus:bg-white/20 focus:ring-2 focus:ring-cyan-400 focus:ring-offset-0 transition-all duration-300 shadow-lg hover:shadow-xl"
+                      required
+                    />
+                  </div>
+                </div>
+
+                {/* Password Field */}
+                <div className="space-y-2">
+                  <Label htmlFor="password" className="text-white font-medium">Password</Label>
+                  <div className="relative group">
+                    <Lock className={`absolute left-4 top-4 h-5 w-5 transition-colors ${
+                      focusedField === 'password' ? 'text-cyan-400' : 'text-blue-300'
+                    }`} />
+                    <Input
+                      id="password"
+                      type={showPassword ? 'text' : 'password'}
+                      placeholder="Enter your password"
+                      value={password}
+                      onChange={e => setPassword(e.target.value)}
+                      onFocus={() => setFocusedField('password')}
+                      onBlur={() => setFocusedField(null)}
+                      className="pl-12 pr-12 py-4 rounded-xl border-0 bg-white/10 backdrop-blur-sm text-white placeholder:text-blue-200 focus:bg-white/20 focus:ring-2 focus:ring-cyan-400 focus:ring-offset-0 transition-all duration-300 shadow-lg hover:shadow-xl"
+                      required
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="absolute right-4 top-4 text-blue-300 hover:text-cyan-400 transition-colors"
+                    >
+                      {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+                    </button>
+                  </div>
+                </div>
+
+                {/* Login Button */}
+                <Button
+                  onClick={handleLogin}
+                  className="w-full bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 text-white font-semibold rounded-xl py-4 mt-6 shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed"
+                  disabled={loading}
+                >
+                  {loading ? (
+                    <div className="flex items-center space-x-2">
+                      <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                      <span>Signing in...</span>
+                    </div>
+                  ) : (
+                    'Sign In'
+                  )}
+                </Button>
+              </div>
+
+              {/* Demo Credentials */}
+              <div className="mt-8 p-6 bg-white/5 backdrop-blur-sm rounded-xl border border-white/10">
+                <p className="text-white font-semibold mb-4 text-center">Quick Demo Access</p>
+                <div className="space-y-3">
+                  {demoCredentials.map((credential, index) => (
+                    <div key={index} className="flex items-center justify-between p-3 bg-white/10 rounded-lg hover:bg-white/20 transition-all cursor-pointer group" onClick={() => fillCredentials(credential)}>
+                      <div className="flex items-center space-x-3">
+                        <div className={`w-3 h-3 rounded-full ${credential.color}`}></div>
+                        <div>
+                          <p className="text-white font-medium text-sm">{credential.role}</p>
+                          <p className="text-blue-200 text-xs">{credential.email}</p>
+                        </div>
+                      </div>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="text-cyan-400 hover:text-cyan-300 hover:bg-white/10 text-xs opacity-0 group-hover:opacity-100 transition-opacity"
+                      >
+                        Use
+                      </Button>
+                    </div>
+                  ))}
+                </div>
+                <p className="text-blue-300 text-xs text-center mt-3">
+                  Click on any role above to auto-fill credentials
+                </p>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Footer */}
+          <div className="text-center mt-8">
+            <p className="text-blue-300 text-sm">
+              Secure • Reliable • Professional
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
 };
 
 export default LoginPage;
