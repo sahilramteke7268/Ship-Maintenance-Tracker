@@ -1,9 +1,12 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { useApp } from '../context/AppContext';
 import { Ship, Lock, Mail, Eye, EyeOff, Waves, Anchor } from 'lucide-react';
+import { toast } from '@/hooks/use-toast';
 
 const LoginPage = () => {
   const [email, setEmail] = useState('');
@@ -11,31 +14,42 @@ const LoginPage = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [focusedField, setFocusedField] = useState(null);
+  const { state, dispatch } = useApp();
+  const navigate = useNavigate();
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
     setLoading(true);
 
-    // Demo users for testing
-    const users = [
-      { email: 'admin@entnt.in', password: 'admin123', role: 'Admin' },
-      { email: 'inspector@entnt.in', password: 'inspect123', role: 'Inspector' },
-      { email: 'engineer@entnt.in', password: 'engine123', role: 'Engineer' }
-    ];
-
-    setTimeout(() => {
-      const user = users.find(
+    try {
+      const user = state.users.find(
         u => u.email === email && u.password === password
       );
 
       if (user) {
-        alert(`Welcome back! Logged in as ${user.role}`);
-        // In real app: navigate to dashboard
+        dispatch({ type: 'SET_CURRENT_USER', payload: user });
+        dispatch({ type: 'SET_AUTHENTICATED', payload: true });
+        toast({
+          title: 'Welcome back!',
+          description: `Logged in as ${user.role}`,
+        });
+        navigate('/');
       } else {
-        alert('Invalid credentials. Please try again.');
+        toast({
+          title: 'Login failed',
+          description: 'Invalid credentials. Please try again.',
+          variant: 'destructive',
+        });
       }
+    } catch (error) {
+      toast({
+        title: 'Error',
+        description: 'An error occurred during login.',
+        variant: 'destructive',
+      });
+    } finally {
       setLoading(false);
-    }, 1000);
+    }
   };
 
   const demoCredentials = [
@@ -53,7 +67,13 @@ const LoginPage = () => {
     <div className="min-h-screen relative overflow-hidden bg-gradient-to-br from-slate-900 via-blue-900 to-indigo-900">
       {/* Animated Background Elements */}
       <div className="absolute inset-0">
-        <div className="absolute top-0 left-0 w-full h-full bg-[url('data:image/svg+xml,%3Csvg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"%3E%3Cg fill="none" fill-rule="evenodd"%3E%3Cg fill="%23ffffff" fill-opacity="0.03"%3E%3Ccircle cx="30" cy="30" r="1"/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')]"></div>
+        <div 
+          className="absolute top-0 left-0 w-full h-full opacity-30"
+          style={{
+            backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fillRule='evenodd'%3E%3Cg fill='%23ffffff' fillOpacity='0.03'%3E%3Ccircle cx='30' cy='30' r='1'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
+            backgroundRepeat: 'repeat'
+          }}
+        />
         
         {/* Floating Ships */}
         <div className="absolute top-20 left-10 opacity-10 animate-pulse">
@@ -97,7 +117,7 @@ const LoginPage = () => {
               <p className="text-blue-200 text-center text-sm">Sign in to your account</p>
             </CardHeader>
             <CardContent className="space-y-6">
-              <div className="space-y-6">
+              <form onSubmit={handleLogin} className="space-y-6">
                 {/* Email Field */}
                 <div className="space-y-2">
                   <Label htmlFor="email" className="text-white font-medium">Email Address</Label>
@@ -149,7 +169,7 @@ const LoginPage = () => {
 
                 {/* Login Button */}
                 <Button
-                  onClick={handleLogin}
+                  type="submit"
                   className="w-full bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 text-white font-semibold rounded-xl py-4 mt-6 shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed"
                   disabled={loading}
                 >
@@ -162,7 +182,7 @@ const LoginPage = () => {
                     'Sign In'
                   )}
                 </Button>
-              </div>
+              </form>
 
               {/* Demo Credentials */}
               <div className="mt-8 p-6 bg-white/5 backdrop-blur-sm rounded-xl border border-white/10">
