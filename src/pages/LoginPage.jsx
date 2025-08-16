@@ -53,9 +53,9 @@ const LoginPage = () => {
   };
 
   const demoCredentials = [
-    { role: 'Admin', email: 'admin@entnt.in', password: 'admin123', color: 'bg-red-500', textColor: 'text-red-700' },
-    { role: 'Inspector', email: 'inspector@entnt.in', password: 'inspect123', color: 'bg-blue-500', textColor: 'text-blue-700' },
-    { role: 'Engineer', email: 'engineer@entnt.in', password: 'engine123', color: 'bg-green-500', textColor: 'text-green-700' }
+    { role: 'Admin', email: 'admin@entnt.in', password: 'admin123', color: 'bg-red-500' },
+    { role: 'Inspector', email: 'inspector@entnt.in', password: 'inspect123', color: 'bg-blue-500' },
+    { role: 'Engineer', email: 'engineer@entnt.in', password: 'engine123', color: 'bg-green-500' }
   ];
 
   const fillCredentials = (credential) => {
@@ -79,17 +79,17 @@ const LoginPage = () => {
         <div className="absolute top-20 left-10 opacity-10 animate-pulse">
           <Ship className="w-12 h-12 text-white transform rotate-12" />
         </div>
-        <div className="absolute bottom-20 right-10 opacity-10 animate-pulse delay-1000">
+        <div className="absolute bottom-20 right-10 opacity-10 animate-pulse" style={{ animationDelay: '1000ms' }}>
           <Anchor className="w-8 h-8 text-white transform -rotate-12" />
         </div>
-        <div className="absolute top-40 right-20 opacity-10 animate-pulse delay-500">
+        <div className="absolute top-40 right-20 opacity-10 animate-pulse" style={{ animationDelay: '500ms' }}>
           <Waves className="w-10 h-10 text-white" />
         </div>
         
         {/* Gradient Orbs */}
         <div className="absolute top-1/4 left-1/4 w-72 h-72 bg-blue-500 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-pulse"></div>
-        <div className="absolute top-1/3 right-1/4 w-72 h-72 bg-purple-500 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-pulse delay-1000"></div>
-        <div className="absolute bottom-1/4 left-1/3 w-72 h-72 bg-cyan-500 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-pulse delay-500"></div>
+        <div className="absolute top-1/3 right-1/4 w-72 h-72 bg-purple-500 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-pulse" style={{ animationDelay: '1000ms' }}></div>
+        <div className="absolute bottom-1/4 left-1/3 w-72 h-72 bg-cyan-500 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-pulse" style={{ animationDelay: '500ms' }}></div>
       </div>
 
       <div className="relative z-10 min-h-screen flex items-center justify-center p-4">
@@ -170,7 +170,7 @@ const LoginPage = () => {
                 {/* Login Button */}
                 <Button
                   type="submit"
-                  className="w-full bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 text-white font-semibold rounded-xl py-4 mt-6 shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="w-full bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 text-white font-semibold rounded-xl py-4 mt-6 shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
                   disabled={loading}
                 >
                   {loading ? (
@@ -189,7 +189,11 @@ const LoginPage = () => {
                 <p className="text-white font-semibold mb-4 text-center">Quick Demo Access</p>
                 <div className="space-y-3">
                   {demoCredentials.map((credential, index) => (
-                    <div key={index} className="flex items-center justify-between p-3 bg-white/10 rounded-lg hover:bg-white/20 transition-all cursor-pointer group" onClick={() => fillCredentials(credential)}>
+                    <div 
+                      key={index} 
+                      className="flex items-center justify-between p-3 bg-white/10 rounded-lg hover:bg-white/20 transition-all cursor-pointer group" 
+                      onClick={() => fillCredentials(credential)}
+                    >
                       <div className="flex items-center space-x-3">
                         <div className={`w-3 h-3 rounded-full ${credential.color}`}></div>
                         <div>
@@ -197,13 +201,9 @@ const LoginPage = () => {
                           <p className="text-blue-200 text-xs">{credential.email}</p>
                         </div>
                       </div>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        className="text-cyan-400 hover:text-cyan-300 hover:bg-white/10 text-xs opacity-0 group-hover:opacity-100 transition-opacity"
-                      >
-                        Use
-                      </Button>
+                      <span className="text-cyan-400 text-xs opacity-0 group-hover:opacity-100 transition-opacity">
+                        Click to use
+                      </span>
                     </div>
                   ))}
                 </div>
